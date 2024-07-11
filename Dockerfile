@@ -1,6 +1,6 @@
-ARG TAG=bookworm
+ARG TAG=current-bookworm
 ARG DEBIAN_FRONTEND=noninteractive
-FROM debian:${TAG} as base
+FROM node:${TAG} as base
 
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
 
