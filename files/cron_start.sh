@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-CronCommand="/usr/bin/env"
+CronCommand="/opt/epg-start.sh"
 
 
 
