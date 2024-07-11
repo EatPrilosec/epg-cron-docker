@@ -1,5 +1,6 @@
 # epg-cron
 
+```
 docker run -d \
   --hostname epg-cron-docker --name epg-cron-docker \
   -v /Storage:/Storage \
@@ -8,3 +9,4 @@ docker run -d \
   -e CronSchedule="0 22 * * *" \
   -e EPG_ARGS="grab -- --site=example.com" \
   ghcr.io/eatprilosec/epg-cron
+```
