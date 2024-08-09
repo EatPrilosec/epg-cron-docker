@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#./m3u4u-update.sh
+./m3u4u-update.sh
 ./epgtool.sh 
 
 
