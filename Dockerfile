@@ -25,9 +25,17 @@ RUN apt-get -y install software-properties-common \
     && add-apt-repository 'deb http://dl.winehq.org/wine-builds/ubuntu/ bionic main' \
     && apt-get update
 
+RUN mkdir -pm755 /etc/apt/keyrings
+RUN wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+RUN wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
+RUN apt-get update
+
+
+
+
 
 ## Install wine and winetricks
-RUN apt-get -y install --install-recommends winehq-devel cabextract
+RUN apt install --install-recommends winehq-devel cabextract
 #RUN apt-get -y install --install-recommends wine1.7
 
 ## Setup GOSU to match user and group ids
