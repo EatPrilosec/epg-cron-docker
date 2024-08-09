@@ -9,7 +9,6 @@ RUN apt-get dist-upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -y install cron sudo wget gnupg
 
 
-
 ##############
 # Wine setup #
 ##############
@@ -64,7 +63,7 @@ ENV HOME /home/user
 RUN chown -R user:userg $HOME
 RUN echo 'user:123' | chpasswd
 
-ENV WINEPREFIX /home/user
+ENV WINEPREFIX $HOME
 
 RUN wineboot --init
 
