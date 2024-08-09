@@ -10,6 +10,9 @@ git clone --depth 1 -b master https://github.com/iptv-org/epg.git ./epgtool
 
 
 if [ ! -f $(pwd)/epgtool-channels.xml ]; then
+  WINEPREFIX=/opt
+  wineboot --init
+  
   ln -s $(pwd)/epgtool/sites $(pwd)/sites
   m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
   if [ ! -f $(pwd)/epgtool-channels.xml ]; then
