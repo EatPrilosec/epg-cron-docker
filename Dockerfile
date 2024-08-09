@@ -63,11 +63,6 @@ ENV HOME /home/user
 RUN chown -R user:userg $HOME
 RUN echo 'user:123' | chpasswd
 
-ENV WINEPREFIX $HOME
-
-RUN wineboot --init
-
-
 RUN apt-get clean
 RUN rm -rf                        \
     /var/lib/apt/lists/*          \
@@ -88,7 +83,9 @@ WORKDIR /opt
 FROM base AS add
 ADD  --chmod=777 files* /opt/
 RUN chmod -R 777 /opt
+ENV WINEPREFIX /opt
 
+RUN wineboot --init
 ENV CronSchedule="*/1 * * * *"
 ENV PUID="1000"
 ENV PGID="1000"
