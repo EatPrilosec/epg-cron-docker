@@ -89,5 +89,6 @@ RUN chmod -R 777 /opt
 ENV CronSchedule="*/1 * * * *"
 ENV PUID="1000"
 ENV PGID="1000"
+ENTRYPOINT ["/bin/bash -c"]
 
 CMD ["/opt/cron_start.sh"]
