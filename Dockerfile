@@ -65,6 +65,8 @@ RUN echo 'user:123' | chpasswd
 
 ENV WINEPREFIX /home/user
 
+RUN wineboot --init
+
 
 RUN apt-get clean
 RUN rm -rf                        \
