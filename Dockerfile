@@ -1,7 +1,7 @@
-ARG TAG=20-bookworm
-ARG DEBIAN_FRONTEND=noninteractive
-FROM node:${TAG} as base
+ARG TAG=bookworm
+FROM debian:${TAG} as base
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
 
 RUN apt-get update
@@ -21,9 +21,6 @@ RUN mkdir -pm755 /etc/apt/keyrings
 RUN wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
 RUN wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
 RUN apt-get update
-
-
-
 
 
 ## Install wine and winetricks
@@ -53,6 +50,17 @@ RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o D
 ##     && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
 ##     && chmod +x /usr/local/bin/gosu \
 ##     && gosu nobody true
+
+
+##############
+# Node setup #
+##############
+
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -y install nodejs
+RUN npm install -g npm
 
 
 ENV USER_ID 9001
