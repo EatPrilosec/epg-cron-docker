@@ -15,6 +15,9 @@ CronCommand="/opt/epg-start.sh"
 
 
 ################################# do not edit if confused ########################################
+LOCAL_GROUP_ID=$PGID
+LOCAL_USER_ID=$PUID
+
 env >/opt/env
 if [ "$PUID" != "$PGID" ]; then
   groupadd -g $PGID
