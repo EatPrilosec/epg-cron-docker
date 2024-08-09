@@ -83,9 +83,9 @@ WORKDIR /opt
 FROM base AS add
 ADD  --chmod=777 files* /opt/
 RUN chmod -R 777 /opt
-ENV WINEPREFIX /opt
+#ENV WINEPREFIX /opt
 
-RUN wineboot --init
+#RUN wineboot --init
 ENV CronSchedule="*/1 * * * *"
 ENV PUID="1000"
 ENV PGID="1000"
