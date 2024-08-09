@@ -7,12 +7,19 @@ if [ -d ./epgtool ]; then
 fi
 
 git clone --depth 1 -b master https://github.com/iptv-org/epg.git ./epgtool
-ln -s $(pwd)/epgtool/sites $(pwd)/sites
-
-m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
 
 
-CHANNELS_XML=../epgtool-channels.xml
+if [ ! -f $(pwd)/epgtool-channels.xml ]; then
+  ln -s $(pwd)/epgtool/sites $(pwd)/sites
+  m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
+  if [ ! -f $(pwd)/epgtool-channels.xml ]; then
+    exit 2
+  fi
+  
+  rm $(pwd)/sites
+fi
+
+
 GUIDE_XML_full=$(pwd)/epgtool-Guide.xml 
 cp epgtool-channels.xml ./epgtool/epgtool-channels.xml
 cd ./epgtool
