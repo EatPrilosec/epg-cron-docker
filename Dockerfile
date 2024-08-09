@@ -1,4 +1,4 @@
-ARG TAG=current-bookworm
+ARG TAG=20-bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 FROM node:${TAG} as base
 
@@ -6,7 +6,8 @@ RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
 
 RUN apt-get update
 RUN apt-get dist-upgrade -y
-RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -y install cron sudo 
+RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -y install cron sudo wine
+
 
 
 RUN apt-get clean
