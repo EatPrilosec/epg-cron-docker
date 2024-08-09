@@ -6,26 +6,19 @@ CronCommand="/opt/epg-start.sh"
 
 
 
-
-
-
-
-
-
-
-
 ################################# do not edit if confused ########################################
+
 LOCAL_GROUP_ID=$PGID
 LOCAL_USER_ID=$PUID
 
-env >/opt/env
-if [ "$PUID" != "$PGID" ]; then
-  groupadd -g $PGID
-  useradd --no-create-home --no-log-init -Uu $PUID --password $RANDOM dockercronjobworker
-else
-  useradd --no-create-home --no-log-init -Uu $PUID --password $RANDOM dockercronjobworker
-fi
-echo "$CronSchedule sudo -E --group=dockercronjobworker --user=dockercronjobworker $CronCommand >/opt/cron.log 2>/opt/cron.log" >/opt/cron
+USER_ID=${LOCAL_USER_ID:-9001}
+GROUP_ID=${LOCAL_GROUP_ID:-250}
+
+usermod -u $USER_ID user
+groupmod -g $GROUP_ID userg
+usermod -a -G sudo user
+
+echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log" >/opt/cron
 crontab /opt/cron
 touch /opt/cron.log
-cron && tail -f /opt/cron.log
+cron && tail -F /opt/cron.log
