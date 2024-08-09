@@ -1,5 +1,7 @@
 #!/bin/bash 
-docker run -it --rm --name epgtool-node -v "$PWD":/usr/src/app --user 1000:1000 -w /usr/src/app node:20-bookworm ./epgtool.sh 
+#docker run -it --rm --name epgtool-node -v "$PWD":/usr/src/app --user 1000:1000 -w /usr/src/app node:20-bookworm 
+
+./epgtool.sh 
 
 
 exit 0
