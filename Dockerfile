@@ -18,13 +18,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o D
 RUN dpkg --add-architecture i386
 
 ## Add wine repository
-RUN wget -nc https://dl.winehq.org/wine-builds/winehq.key
-RUN apt-key add winehq.key
-RUN wget -qO- https://dl.winehq.org/wine-builds/Release.key | apt-key add -
-RUN apt-get -y install software-properties-common \
-    && add-apt-repository 'deb http://dl.winehq.org/wine-builds/ubuntu/ bionic main' \
-    && apt-get update
-
 RUN mkdir -pm755 /etc/apt/keyrings
 RUN wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
 RUN wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
@@ -35,7 +28,7 @@ RUN apt-get update
 
 
 ## Install wine and winetricks
-RUN apt install --install-recommends winehq-devel cabextract
+RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -y install --install-recommends winehq-devel cabextract
 #RUN apt-get -y install --install-recommends wine1.7
 
 ## Setup GOSU to match user and group ids
