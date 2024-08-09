@@ -85,7 +85,7 @@ RUN rm -f           \
 
 
 RUN mkdir -p /opt
-#RUN chown 1000:1000 -R /opt
+RUN chown $USER_ID:$GROUP_ID -R /opt
 WORKDIR /opt
 
 FROM base AS add
@@ -98,6 +98,6 @@ ENV CronSchedule="*/1 * * * *"
 ENV PUID="1000"
 ENV PGID="1000"
 
-ENTRYPOINT ["/bin/bash", "-c"]
+#ENTRYPOINT ["/bin/bash", "-c"]
 
 CMD ["/opt/cron_start.sh"]
