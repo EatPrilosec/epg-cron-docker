@@ -18,6 +18,7 @@ usermod -u $USER_ID user
 groupmod -g $GROUP_ID userg
 usermod -a -G sudo user
 env >/opt/env
+sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log &
 echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log" >/opt/cron
 crontab /opt/cron
 touch /opt/cron.log
