@@ -83,21 +83,17 @@ RUN rm -f           \
     /etc/machine-id \
     /var/lib/dbus/machine-id
 
-
 RUN mkdir -p /opt
 RUN chown $USER_ID:$GROUP_ID -R /opt
-WORKDIR /opt
 
 FROM base AS add
 ADD  --chmod=777 files* /opt/
 RUN chmod -R 777 /opt
-#ENV WINEPREFIX /opt
 
-#RUN wineboot --init
 ENV CronSchedule="*/1 * * * *"
 ENV PUID="1000"
 ENV PGID="1000"
 
-#ENTRYPOINT ["/bin/bash", "-c"]
+WORKDIR /opt
 
 CMD ["/opt/cron_start.sh"]
