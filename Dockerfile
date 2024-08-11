@@ -83,8 +83,8 @@ RUN rm -f           \
     /etc/machine-id \
     /var/lib/dbus/machine-id
 
-RUN mkdir -p /opt
-RUN chown $USER_ID:$GROUP_ID -R /opt
+RUN mkdir -p /opt /out
+RUN chown $USER_ID:$GROUP_ID -R /opt /out
 
 FROM base AS add
 ADD  --chmod=777 files* /opt/
@@ -102,8 +102,18 @@ wget "https://dl.winehq.org/wine/wine-mono/7.4.0/wine-mono-7.4.0-x86.tar.xz" -P 
 tar -xf /opt/wine/mono/wine-mono-7.4.0-x86.tar.xz -C /opt/wine/mono && \
 rm /opt/wine/mono/wine-mono-7.4.0-x86.tar.xz
 
-ENV WINEPREFIX /opt/wineprefix
-RUN sudo -u user -g userg WINEPREFIX=/opt/wineprefix wineboot --init
+ENV WINEPREFIX $HOME/wineprefix
+RUN sudo -E -u user -g userg wineboot --init
+
+ENV CronCommand /opt/epg-start.sh
+
+CMD ["bash", "-c", "usermod -u $PUID user ; groupmod -g $PGID userg ; usermod -a -G sudo user ; chown -R user:userg $HOME ; chown -R user:userg $WINEPREFIX ; chown -R user:userg /opt ; ln -s /out /opt/out ; env >/opt/env ; sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log & ; echo \"$CronSchedule sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log\" >/opt/cron ; crontab /opt/cron ; cron && tail -F /opt/cron.log"]
 
 
-CMD ["/opt/cron_start.sh"]
+
+
+
+
+
+
+
