@@ -85,15 +85,23 @@ RUN sudo -E -u user -g userg wineboot --init
 ENV CronCommand /app/epg-start.sh
 
 
-CMD usermod -u $PUID user \
-    groupmod -g $PGID userg\
-    usermod -a -G sudo user \
-    chown -R user:userg $HOME \
-    chown -R user:userg $WINEPREFIX \
-    chown -R user:userg /app \
-    bash -c "env >/app/env" \
-    sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & \
-    echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log" >/home/user/cronfile \
-    crontab /home/user/cronfile \
-    cron & \
+["sh", "-c", "
+    apt update && apt install -y libldap-common;
+    cp /ca.crt /usr/local/share/ca-certificates/;
+    update-ca-certificates;
+    exec apache2-foreground
+  "]
+
+CMD ["bash", "-c", "usermod -u $PUID user ;
+    groupmod -g $PGID userg ;
+    usermod -a -G sudo user ;
+    chown -R user:userg $HOME ;
+    chown -R user:userg $WINEPREFIX ;
+    chown -R user:userg /app ;
+    bash -c "env >/app/env" ;
+    sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & ;
+    echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log" >/home/user/cronfile ;
+    crontab /home/user/cronfile ;
+    cron & ;
     tail -F /home/user/cron.log
+"]
