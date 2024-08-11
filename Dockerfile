@@ -25,31 +25,6 @@ RUN apt-get update
 
 ## Install wine and winetricks
 RUN DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -y install --install-recommends winehq-devel cabextract
-#RUN apt-get -y install --install-recommends wine1.7
-
-## Setup GOSU to match user and group ids
-##
-## User: user
-## Pass: 123
-## 
-## Note that this setup also relies on entrypoint.sh
-## Set LOCAL_USER_ID as an ENV variable at launch or the default uid 9001 will be used
-## Set LOCAL_GROUP_ID as an ENV variable at launch or the default uid 250 will be used
-## (e.g. docker run -e LOCAL_USER_ID=151149 ....)
-##
-## Initial password for user will be 123
-## ENV GOSU_VERSION 1.9
-## RUN set -x \
-##     && apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
-##     && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
-##     && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
-##     && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" \
-##     && export GNUPGHOME="$(mktemp -d)" \
-##     && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-##     && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
-##     && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
-##     && chmod +x /usr/local/bin/gosu \
-##     && gosu nobody true
 
 
 ##############
@@ -83,12 +58,12 @@ RUN rm -f           \
     /etc/machine-id \
     /var/lib/dbus/machine-id
 
-RUN mkdir -p /opt /out
-RUN chown $USER_ID:$GROUP_ID -R /opt /out
+RUN mkdir -p /app /out
+RUN chown $USER_ID:$GROUP_ID -R /app /out
 
 FROM base AS add
-ADD  --chmod=777 files* /opt/
-RUN chmod -R 777 /opt
+ADD  --chmod=777 files* /app/
+RUN chmod -R 777 /app
 
 ENV CronSchedule="*/1 * * * *"
 ENV PUID="1000"
@@ -105,9 +80,9 @@ rm /opt/wine/mono/wine-mono-7.4.0-x86.tar.xz
 ENV WINEPREFIX $HOME/wineprefix
 RUN sudo -E -u user -g userg wineboot --init
 
-ENV CronCommand /opt/epg-start.sh
+ENV CronCommand /app/epg-start.sh
 
-CMD ["bash", "-c", "usermod -u $PUID user ; groupmod -g $PGID userg ; usermod -a -G sudo user ; chown -R user:userg $HOME ; chown -R user:userg $WINEPREFIX ; chown -R user:userg /opt ; ln -s /out /opt/out ; env >/opt/env ; sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log & ; echo \"$CronSchedule sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log\" >/opt/cron ; crontab /opt/cron ; cron && tail -F /opt/cron.log"]
+CMD ["bash", "-c", "usermod -u $PUID user ; groupmod -g $PGID userg ; usermod -a -G sudo user ; chown -R user:userg $HOME ; chown -R user:userg $WINEPREFIX ; chown -R user:userg /app ;  env >/app/env ; sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & ; echo \"$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log\" >/home/user/cronfile ; crontab /home/user/cronfile ; cron & ; tail -F /opt/cron.log"]
 
 
 
