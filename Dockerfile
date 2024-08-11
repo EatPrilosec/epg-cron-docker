@@ -96,4 +96,14 @@ ENV PGID="1000"
 
 WORKDIR /opt
 
+# Wine-Init
+RUN mkdir -p /opt/wine/mono && \
+wget "https://dl.winehq.org/wine/wine-mono/7.4.0/wine-mono-7.4.0-x86.tar.xz" -P /opt/wine/mono && \
+tar -xf /opt/wine/mono/wine-mono-7.4.0-x86.tar.xz -C /opt/wine/mono && \
+rm /opt/wine/mono/wine-mono-7.4.0-x86.tar.xz
+
+ENV WINEPREFIX /opt/wineprefix
+RUN sudo -u user -g userg WINEPREFIX=/opt/wineprefix wineboot --init
+
+
 CMD ["/opt/cron_start.sh"]
