@@ -9,6 +9,7 @@ fi
 if [[ -z "$LastDlCheck" ]]
 then
   DLNow=1
+  LastDlCheck=$ThisDLChk
 fi
 
 ChkResult=$(($ThisDLChk - $LastDlCheck))
