@@ -1,7 +1,7 @@
 ARG TAG=bookworm
 FROM debian:${TAG} as base
 
-SHELL ["/bin/bash", "-c"]
+
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
@@ -84,8 +84,8 @@ RUN sudo -E -u user -g userg wineboot --init
 
 ENV CronCommand /app/epg-start.sh
 
-
-CMD ["bash", "-c", "\'usermod -u $PUID user ; \
+SHELL ["/bin/bash", "-c"]
+CMD 'usermod -u $PUID user ; \
     groupmod -g $PGID userg ; \
     usermod -a -G sudo user ; \
     chown -R user:userg $HOME ; \
@@ -96,5 +96,5 @@ CMD ["bash", "-c", "\'usermod -u $PUID user ; \
     echo \"$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log\" >/home/user/cronfile ; \
     crontab /home/user/cronfile ; \
     cron & ; \
-    tail -F /home/user/cron.log \
-\'"]
+    tail -F /home/user/cron.log '
+
