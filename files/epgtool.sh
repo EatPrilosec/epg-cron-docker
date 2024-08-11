@@ -1,39 +1,36 @@
 #!/bin/bash 
 echo $(pwd)
-ls $(pwd)
-#sleep 10
-if [ -d ./epgtool ]; then
-  rm -rf ./epgtool
+sleep 3
+
+if [ -d /opt/epgtool ]; then
+  rm -rf /opt/epgtool
 fi
 
-git clone --depth 1 -b master https://github.com/iptv-org/epg.git ./epgtool
+git clone --depth 1 -b master https://github.com/iptv-org/epg.git /opt/epgtool
 
-
-if [ ! -f $(pwd)/epgtool-channels.xml ]; then
+if [ ! -f /opt/out/epgtool-channels.xml ]; then
   WINEPREFIX=/opt
   wineboot --init
+  ln -s /opt/epgtool/sites /opt/sites
+  cp /opt/out/m3u4u-MergedPlaylist.m3u /opt/m3u4u-MergedPlaylist.m3u || exit 2
   
-  ln -s $(pwd)/epgtool/sites $(pwd)/sites
-  m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
-  if [ ! -f $(pwd)/epgtool-channels.xml ]; then
-    exit 2
-  fi
+  chmod +x /opt/m3u2xml.exe
+  /opt/m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
+  rm /opt/sites
+
+  [ -f /opt/epgtool-channels.xml ] || exit 2
   
-  rm $(pwd)/sites
 fi
 
-
-GUIDE_XML_full=$(pwd)/epgtool-Guide.xml 
-cp epgtool-channels.xml ./epgtool/epgtool-channels.xml
-cd ./epgtool
+GUIDE_XML_full=/opt/out/epgtool-Guide.xml 
+cp /opt/epgtool-channels.xml /opt/epgtool/epgtool-channels.xml
+cd /opt/epgtool
 
 npm install
-
-#npm update
 npm run api:load
 npm run grab -- --channels=epgtool-channels.xml --days 2 --output=epgtool-Guide.xml
 
-cp epgtool-Guide.xml $GUIDE_XML_full
+mv epgtool-Guide.xml $GUIDE_XML_full
 
 sed -i 's/\&apos;/XMLAPOSXMLAPOSXMLAPOSXMLAPOS/g'  $GUIDE_XML_full
 sed -i 's/\&quot;/XMLQUOTXMLQUOTXMLQUOTXMLQUOT/g'  $GUIDE_XML_full
@@ -47,10 +44,6 @@ sed -i 's/XMLAMPXMLAMPXMLAMPXMLAMP/\&amp;/g'  $GUIDE_XML_full
 sed -i 's/XMLLTXMLLTXMLLTXMLLTXMLLT/\&lt;/g'  $GUIDE_XML_full
 sed -i 's/XMLGTXMLGTXMLGTXMLGTXMLGT/\&gt;/g'  $GUIDE_XML_full
 
+[ -d ./epgtool ] && rm -r ./epgtool
 
-
-if [ -d ./epgtool ]; then
-  rm -r ./epgtool
-fi
-
-exit
+exit 0
