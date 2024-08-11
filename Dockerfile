@@ -91,9 +91,9 @@ CMD ["bash", "-c", "usermod -u $PUID user ;
     chown -R user:userg $HOME ;
     chown -R user:userg $WINEPREFIX ;
     chown -R user:userg /app ;
-    bash -c "env >/app/env" ;
+    env >/app/env ;
     sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & ;
-    echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log" >/home/user/cronfile ;
+    echo \"$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log\" >/home/user/cronfile ;
     crontab /home/user/cronfile ;
     cron & ;
     tail -F /home/user/cron.log
