@@ -95,7 +95,7 @@ CMD <<-EOF
     chown -R user:userg $HOME 
     chown -R user:userg $WINEPREFIX
     chown -R user:userg /app
-    env >/app/env
+    bash -c "env >/app/env"
     sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & 
     echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log" >/home/user/cronfile 
     crontab /home/user/cronfile 
