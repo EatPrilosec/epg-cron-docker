@@ -85,7 +85,7 @@ RUN sudo -E -u user -g userg wineboot --init
 ENV CronCommand /app/epg-start.sh
 
 
-CMD << EndOfStartScript
+CMD <<EndOfStartScript
 
 echo test 
 echo test2 
