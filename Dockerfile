@@ -1,6 +1,8 @@
 ARG TAG=bookworm
 FROM debian:${TAG} as base
 
+SHELL ["/bin/bash", "-c"]
+
 ARG DEBIAN_FRONTEND=noninteractive
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
 
@@ -81,18 +83,23 @@ ENV WINEPREFIX $HOME/wineprefix
 RUN sudo -E -u user -g userg wineboot --init
 
 ENV CronCommand /app/epg-start.sh
-ENTRYPOINT ["/usr/bin/bash", "-c"]
-CMD echo test \
-    echo test2 ; \
-    usermod -u $PUID user ; \
-    groupmod -g $PGID userg ; \
-    usermod -a -G sudo user ; \
-    chown -R user:userg $HOME ; \
-    chown -R user:userg $WINEPREFIX ; \
-    chown -R user:userg /app ; \
-    env >/app/env ; \
-    sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & ; \
-    echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log" >/home/user/cronfile ; \
-    crontab /home/user/cronfile ; \
-    cron & ; \
-    tail -F /opt/cron.log
+
+
+CMD << EndOfStartScript
+
+echo test 
+echo test2 
+usermod -u $PUID user 
+groupmod -g $PGID userg
+usermod -a -G sudo user 
+chown -R user:userg $HOME 
+chown -R user:userg $WINEPREFIX
+chown -R user:userg /app
+env >/app/env
+sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log & 
+echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/home/user/cron.log 2>/home/user/cron.log" >/home/user/cronfile 
+crontab /home/user/cronfile 
+cron & 
+tail -F /opt/cron.log
+
+EndOfStartScript
