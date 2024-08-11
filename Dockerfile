@@ -85,7 +85,7 @@ RUN sudo -E -u user -g userg wineboot --init
 ENV CronCommand /app/epg-start.sh
 
 
-CMD ["bash", "-c", "usermod -u $PUID user ; \
+CMD ["bash", "-c", "\"usermod -u $PUID user ; \
     groupmod -g $PGID userg ; \
     usermod -a -G sudo user ; \
     chown -R user:userg $HOME ; \
@@ -97,4 +97,4 @@ CMD ["bash", "-c", "usermod -u $PUID user ; \
     crontab /home/user/cronfile ; \
     cron & ; \
     tail -F /home/user/cron.log \
-"]
+\""]
