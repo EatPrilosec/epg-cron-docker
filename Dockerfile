@@ -81,8 +81,10 @@ ENV WINEPREFIX $HOME/wineprefix
 RUN sudo -E -u user -g userg wineboot --init
 
 ENV CronCommand /app/epg-start.sh
-
-CMD usermod -u $PUID user ; \
+ENTRYPOINT ["/usr/bin/bash", "-c"]
+CMD echo test \
+    echo test2 ; \
+    usermod -u $PUID user ; \
     groupmod -g $PGID userg ; \
     usermod -a -G sudo user ; \
     chown -R user:userg $HOME ; \
