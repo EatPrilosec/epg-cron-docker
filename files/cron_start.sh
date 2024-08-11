@@ -8,14 +8,10 @@ CronCommand="/opt/epg-start.sh"
 
 ################################# do not edit if confused ########################################
 
-LOCAL_GROUP_ID=$PGID
-LOCAL_USER_ID=$PUID
 
-USER_ID=${LOCAL_USER_ID:-9001}
-GROUP_ID=${LOCAL_GROUP_ID:-250}
 
-usermod -u $USER_ID user
-groupmod -g $GROUP_ID userg
+usermod -u $PUID user
+groupmod -g $PGID userg
 usermod -a -G sudo user
 chown -R user:userg /opt
 env >/opt/env
