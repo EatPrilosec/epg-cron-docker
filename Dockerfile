@@ -85,13 +85,6 @@ RUN sudo -E -u user -g userg wineboot --init
 ENV CronCommand /app/epg-start.sh
 
 
-["sh", "-c", "
-    apt update && apt install -y libldap-common;
-    cp /ca.crt /usr/local/share/ca-certificates/;
-    update-ca-certificates;
-    exec apache2-foreground
-  "]
-
 CMD ["bash", "-c", "usermod -u $PUID user ;
     groupmod -g $PGID userg ;
     usermod -a -G sudo user ;
