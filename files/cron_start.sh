@@ -17,7 +17,7 @@ GROUP_ID=${LOCAL_GROUP_ID:-250}
 usermod -u $USER_ID user
 groupmod -g $GROUP_ID userg
 usermod -a -G sudo user
-chmod -R user:user /opt
+chown -R user:userg /opt
 env >/opt/env
 sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log &
 echo "$CronSchedule sudo -E --group=userg --user=user $CronCommand >/opt/cron.log 2>/opt/cron.log" >/opt/cron
