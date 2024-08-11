@@ -14,6 +14,8 @@ if [ ! -f /out/epgtool-channels.xml ]; then
   cp /out/m3u4u-MergedPlaylist.m3u /app/m3u4u-MergedPlaylist.m3u || exit 2
   
   chmod a+x /app/m3u2xml.exe
+  echo "trying wine thing"
+  sleep 3
   /app/m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
   rm /app/sites
 
