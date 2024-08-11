@@ -2,29 +2,29 @@
 echo $(pwd)
 sleep 3
 
-if [ -d /opt/epgtool ]; then
-  rm -rf /opt/epgtool
+if [ -d /app/epgtool ]; then
+  rm -rf /app/epgtool
 fi
 
-git clone --depth 1 -b master https://github.com/iptv-org/epg.git /opt/epgtool
+git clone --depth 1 -b master https://github.com/iptv-org/epg.git /app/epgtool
 
-if [ ! -f /opt/out/epgtool-channels.xml ]; then
-  WINEPREFIX=/opt
+if [ ! -f /out/epgtool-channels.xml ]; then
   wineboot --init
-  ln -s /opt/epgtool/sites /opt/sites
-  cp /opt/out/m3u4u-MergedPlaylist.m3u /opt/m3u4u-MergedPlaylist.m3u || exit 2
+  ln -s /app/epgtool/sites /app/sites
+  cp /out/m3u4u-MergedPlaylist.m3u /app/m3u4u-MergedPlaylist.m3u || exit 2
   
-  chmod +x /opt/m3u2xml.exe
-  /opt/m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
-  rm /opt/sites
+  chmod a+x /app/m3u2xml.exe
+  /app/m3u2xml.exe --m3u "m3u4u-MergedPlaylist.m3u" --SitesDir "sites" --OutName "epgtool-channels" --SiteIgnoreFile "IgnoreSites.txt" 
+  rm /app/sites
 
-  [ -f /opt/epgtool-channels.xml ] || exit 2
+  [[ -f /app/epgtool-channels.xml ]] || exit 2
+  cp /app/epgtool-channels.xml /app/epgtool/epgtool-channels.xml
+  cp /app/epgtool-channels.m3u /out/epgtool-channels.m3u
   
 fi
 
-GUIDE_XML_full=/opt/out/epgtool-Guide.xml 
-cp /opt/epgtool-channels.xml /opt/epgtool/epgtool-channels.xml
-cd /opt/epgtool
+GUIDE_XML_full=/out/epgtool-Guide.xml 
+cd /app/epgtool
 
 npm install
 npm run api:load
