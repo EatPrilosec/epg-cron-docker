@@ -85,7 +85,7 @@ RUN sudo -E -u user -g userg wineboot --init
 ENV CronCommand /app/epg-start.sh
 
 
-CMD <<-EndOfStartScript
+CMD <<-EOF
 
     echo test 
     echo test2 
@@ -102,4 +102,4 @@ CMD <<-EndOfStartScript
     cron & 
     tail -F /opt/cron.log
     
-    EndOfStartScript
+    EOF
